@@ -15,7 +15,8 @@ enum Op
     OP_MULITPLY,
     OP_POWER,
     OP_RELU,
-    OP_ABS
+    OP_ABS,
+    OP_TANH
 };
 
 typedef struct Value
@@ -179,6 +180,22 @@ static inline scalar absolute(scalar a)
     children[0] = a;
     scalar c = init_scalar_with_children(res, children, 1);
     c->_op = OP_ABS;
+    c->_backward = &backward_absolute;
+    return c;
+}
+
+static inline void backward_tan_hyperbolic(scalar self)
+{
+    self->_children[0]->grad += (1.0 - pow(tanh(self->_children[0]->data), 2.0)) * self->grad;
+}
+
+static inline scalar tan_hyperbolic(scalar a)
+{
+    double res = tanh(a->data);
+    tensor children = (tensor)malloc(1 * sizeof(scalar));
+    children[0] = a;
+    scalar c = init_scalar_with_children(res, children, 1);
+    c->_op = OP_TANH;
     c->_backward = &backward_absolute;
     return c;
 }

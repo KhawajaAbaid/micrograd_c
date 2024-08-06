@@ -51,7 +51,8 @@ static inline tensor get_neuron_params(Neuron *n)
 enum Activation
 {
     ACT_RAW_PLEASE,
-    ACT_RELU
+    ACT_RELU,
+    ACT_TANH
 };
 
 typedef struct
@@ -89,6 +90,8 @@ static inline tensor apply_layer(Layer *l, tensor x)
            case ACT_RELU:
                logits[i] = relu(logits[i]);
                break;
+           case ACT_TANH:
+               logits[i] = tan_hyperbolic(logits[i]);
            default:
                break;
        }
