@@ -45,8 +45,8 @@ static inline scalar init_scalar(double data)
 }
 
 static inline scalar init_scalar_with_children(double data,
-                                                 tensor children,
-                                                 size_t n_children)
+                                               tensor children,
+                                               size_t n_children)
 {
     scalar s = init_scalar(data);
     s->_children = children;
