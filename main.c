@@ -26,17 +26,17 @@ int main()
     const size_t n_layers = 3;
     const size_t n_in = 3;
     size_t n_outs[3] = {5, 5, 1};
-    const double learning_rate = 0.05;
-    enum Activation act_hidden = ACT_RELU;
+    const double learning_rate = 0.0001;
+    enum Activation act_hidden = ACT_TANH;
     enum Activation act_out = ACT_RAW_PLEASE;
     MLP *mlp = init_mlp(n_in, n_outs, n_layers, act_hidden, act_out);
     
     const size_t n_samples = 4;
     double xs[4][3] = {
-        {2.0, 3.0, -1.0},
-        {3.0, -1.0, 0.5},
-        {0.5, 1.0, 1.0},
-        {1.0, 1.0, -1.0}
+        {-0.07708825,  1.09136604, -1.47771791},
+        {0.46909754,  1.45333126,  0.21135764},
+        {0.46909754,  1.45333126,  0.21135764},
+        {1.78757578, -0.87620064,  0.48024694}
     };
     
     tensor *xs_t = (tensor *)malloc(n_samples * sizeof(tensor));
@@ -66,7 +66,6 @@ int main()
 
         // backward
         backward(loss);
-        printf("w[0].grad: %f\n", mlp->layers[0]->ns[0]->w[0]->grad);
         params = get_mlp_params(mlp);
         update_params(mlp, learning_rate);
 
