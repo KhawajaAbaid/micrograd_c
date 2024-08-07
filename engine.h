@@ -28,7 +28,7 @@ typedef struct Value
     size_t _n_children;
     struct Value **_children;
     void (*_backward)(struct Value *);
-    double aux;     // any auxilary value to use in backward pass
+    double _aux;     // any auxilary value to use in backward pass
 } Value;
 
 typedef Value * scalar;    // scalar tensor
@@ -137,7 +137,7 @@ static inline scalar multiply(scalar a, scalar b)
 
 static inline void backward_power_up(scalar self)
 {
-    self->_children[0]->grad += (self->aux * pow(self->_children[0]->data, self->aux - 1)) * self->grad;
+    self->_children[0]->grad += (self->_aux * pow(self->_children[0]->data, self->_aux - 1)) * self->grad;
 }
 
 static inline scalar power_up(scalar a, double power)
@@ -147,7 +147,7 @@ static inline scalar power_up(scalar a, double power)
     children[0] = a;
     scalar c = init_scalar_with_children(res, children, 1);
     c->_op = OP_POWER;
-    c->aux = power;
+    c->_aux = power;
     c->_backward = &backward_power_up;
     return c;
 }
