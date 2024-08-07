@@ -19,16 +19,16 @@ static inline Neuron *init_neuron(const size_t n_in, const size_t n_out)
     n->w = (tensor)malloc(n_in * sizeof(scalar));
     for (size_t i = 0; i < n_in; i++)
     {
-        n->w[i] = init_scalar(glorot_random_normal(n_in, n_out));
+        n->w[i] = init_scalar(glorot_random_normal(n_in, n_out), TYPE_PARAM);
     }
-    n->b = init_scalar(0.);
+    n->b = init_scalar(0., TYPE_PARAM);
     n->n_in = n_in;
     return n;
 }
 
 static inline scalar apply_neuron(Neuron *n, tensor x)
 {
-    scalar logit = init_scalar(0.0);
+    scalar logit = init_scalar(0.0, TYPE_INTERMEDIATE);
     for (size_t i = 0; i < n->n_in; i++)
     {
         logit = add(logit, multiply(n->w[i], x[i]));

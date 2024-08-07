@@ -30,7 +30,6 @@ int main()
     enum Activation act_hidden = ACT_TANH;
     enum Activation act_out = ACT_RAW_PLEASE;
     MLP *mlp = init_mlp(n_in, n_outs, n_layers, act_hidden, act_out);
-    
     const size_t n_samples = 4;
     double xs[4][3] = {
         {-0.07708825,  1.09136604, -1.47771791},
@@ -46,7 +45,6 @@ int main()
     }
     double ys[4] = {1.0, -1.0, -1.0, 1.0};
     tensor ys_t = Tensor(ys, 4);
-    
     const size_t n_epochs = 20;
     tensor y_pred;
     scalar y_preds[4];
@@ -55,21 +53,21 @@ int main()
     for (size_t epoch = 0; epoch < n_epochs; epoch++)
     {
         // forward pass
-        loss = init_scalar(0.0);
+        loss = init_scalar(0.0, TYPE_INTERMEDIATE);
         for (size_t i = 0; i < n_samples; i++)
         {
             y_pred = apply_mlp(mlp, xs_t[i]);
             y_preds[i] = y_pred[0];
             free(y_pred);
-            loss = add(loss, absolute(subtract(ys_t[i], y_preds[i])));
+            loss = add(loss, power_up(subtract(ys_t[i], y_preds[i]), 2.0));
         }
-
+        loss->type = TYPE_OUTPUT;
+        loss->data /= n_samples;
+        printf("Epoch: %ld | Loss: %.5f\n", epoch, loss->data);
         // backward
         backward(loss);
         params = get_mlp_params(mlp);
-        update_params(mlp, learning_rate);
-
-        printf("Epoch: %ld | Loss: %.5f\n", epoch, loss->data);
+        update_params(mlp, learning_rate);    
     }
     return 0;
 }
